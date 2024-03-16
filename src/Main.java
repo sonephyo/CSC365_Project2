@@ -5,7 +5,13 @@ import com.google.gson.GsonBuilder;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -14,200 +20,62 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Hashtable;
+import java.io.FileReader;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.IntStream;
+import javax.swing.*;
 
-public class Main extends JFrame {
+public class Main {
 
-    private JComboBox<String> userInputField;
-    private JButton searchButton;
-    private JTextArea resultArea;
+    public static void main(String[] args) throws IOException {
 
-    public Main(){
-        setTitle("Business Recommendar");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        BufferedReader br = new BufferedReader(new FileReader("src/database/businesses.json"));
 
-        DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
-        comboBoxModel.addElement(("Moon's Kitchen Cafe"));
-        comboBoxModel.addElement(("Thai Legacy Restaurant"));
-        comboBoxModel.addElement(("Blues City Deli"));
-        comboBoxModel.addElement(("New India's Kitchen"));
-        comboBoxModel.addElement(("Enterprise Rent-A-Car"));
-        comboBoxModel.addElement(("EATS! American Grill"));
-        comboBoxModel.addElement(("Helena Avenue Bakery"));
-        comboBoxModel.addElement(("Yolklore"));
-        comboBoxModel.addElement(("Zimmer's Seafood"));
-        comboBoxModel.addElement(("Target"));
+        // Building Gson
+        GsonBuilder gb = new GsonBuilder();
+        Gson gson = gb.create();
+        String line;
+        int busCount = 0;
+        int busLength = 10000;
 
-        userInputField = new JComboBox<>(comboBoxModel);
-        userInputField.setEditable(true);
-        resultArea = new JTextArea();
+        ArrayList<String> businessName = new ArrayList<>();
 
 
+        // Making the hashtable for the businesses
+        Map<String, Business> businessHashMap = new HashMap<>();
+        while ((line = br.readLine()) != null && busCount < busLength) {
+            Business b1 = gson.fromJson(line, Business.class);
+            if(!businessName.contains(b1.getName())){
+                businessName.add(b1.getName());
+                businessHashMap.put(b1.getBusiness_id(), b1);
 
-        searchButton = new JButton("Search");
-        resultArea = new JTextArea();
+                String fileName = b1.getBusiness_id() + ".ser";
+                FileOutputStream fileOut = new FileOutputStream("src/files/" + fileName);
+                ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
-        JPanel inputPanel = new JPanel(new FlowLayout());
-        inputPanel.add(new JLabel("Enter a business name:  "));
-        inputPanel.add(userInputField);
-        inputPanel.add(searchButton);
-        add(inputPanel, BorderLayout.NORTH);
-        add(new JScrollPane(resultArea), BorderLayout.CENTER);
+                out.writeObject(b1);
+                out.close();
+                fileOut.close();
+                System.out.println("saved");
 
-        searchButton.addActionListener(e -> search());
-        pack();
-        setLocationRelativeTo(null);
-
-
-
-
-    }
-
-    private void search() {
-        resultArea.setText("");
-        try {
-
-            BufferedReader br = new BufferedReader(new FileReader("src/database/businesses.json"));
-
-            // Building Gson
-            GsonBuilder gb = new GsonBuilder();
-            Gson gson = gb.create();
-            String line;
-
-
-            // Making the hashtable for the businesses to connect reviews and businesses with id
-            Hashtable<String, Business> businessHashtable = new Hashtable<>();
-            while ((line = br.readLine()) != null) {
-                Business b1 = gson.fromJson(line, Business.class);
-                businessHashtable.put(b1.getBusiness_id(), b1);
+                busCount++;
             }
 
-            // Building Gson for review
-            BufferedReader brReview = new BufferedReader(new FileReader("src/database/reviews.json"));
-            GsonBuilder gbReview = new GsonBuilder();
-            Gson gsonReview = gbReview.create();
-
-            // Making a table for reviews and taking track of the total number of reviews
-            String lineReview;
-            int reviewcount = 0; // Number of reviews, n
-            int reviewLengthToParse = 10000;
-
-            Review[] reviewList = new Review[reviewLengthToParse];
-
-            while ((lineReview = brReview.readLine()) != null && reviewcount < reviewLengthToParse) {
-                Review r1 = gsonReview.fromJson(lineReview, Review.class);
-                r1.setBusiness_name(businessHashtable.get(r1.getBusiness_id()).getName());
-                reviewList[reviewcount] = r1;
-                reviewcount++;
-            }
-
-
-            // Getting user input and cleaning the string
-            String userInput = userInputField.getSelectedItem().toString() ;
-            String userInputStoreReview = searchForStore(reviewList, userInput);
-
-            reviewList = Arrays.stream(reviewList)
-                    .filter(s -> !(s.getBusiness_name().equalsIgnoreCase(userInput)))
-                    .toArray(Review[]::new); // Removing the same store name that user inputs from the review list
-
-            String[] inputSplit = cleanString(userInputStoreReview);
-
-            // initializing for document frequency(df)
-            // Note: DF means Total Number of reviews that contain that word
-            int[] dfCount = new int[inputSplit.length];
-
-            // Populating the frequency table with tf and (True/False) values for df
-            for (Review review : reviewList) {
-                review.init_FreqTableForEachReview(inputSplit); // initialize the frequency table depending on the user input
-                String[] cleanReviewData = cleanString(review.getReview_text());
-
-                for (String i : cleanReviewData) {
-                    for (int j = 0; j < inputSplit.length; j++) {
-                        if (inputSplit[j].equalsIgnoreCase(i)) {
-                            review.incrementCountOfEach(j);
-                            review.setTrueContainsWord(j);
-                        }
-                    }
-                }
-
-                // Calculating the df values from true or false values from frequency table
-                for (int i = 0; i < review.getContainsWord().length; i++) {
-                    if (review.getContainsWord()[i]) {
-                        dfCount[i]++;
-                    }
-                }
-            }
-
-            // Calculating the total weights for each review
-            for (Review r : reviewList) {
-                r.setTotalWeight(calculateWeight(r.getCountOfEachWord(), dfCount, reviewLengthToParse));
-            }
-
-            // Sorting the reviews by their total weight in descending orders
-            Arrays.sort(reviewList, new Comparator<Review>() {
-                @Override
-                public int compare(Review r1, Review r2) {
-                    return Double.compare(r2.getTotalWeight(), r1.getTotalWeight());
-                }
-            });
-
-
-            // Outputting two businesses with the highest total weight values.
-            int outputNumber = 2;
-            for (int i = 0; i < outputNumber; i++) {
-//                System.out.println("__________");
-//                System.out.println(reviewList[i].getTotalWeight());
-//                System.out.println(reviewList[i].getReview_text());
-                Business businessOutput = businessHashtable.get(reviewList[i].getBusiness_id());
-                resultArea.append("Business name: " + businessOutput.getName() + "\n");
-            }
-
-        } catch (Exception e){
-            resultArea.append("Store not found! Choose another one!");
         }
-    }
-
-    // Method for calculating total weight
-    private static double calculateWeight(int[] tfData,int[] dfData, int totalReview) {
-        double total = 0;
-        for (int i = 0; i < tfData.length; i++) {
-            total += Math.log10(1+tfData[i])*((double) totalReview /(dfData[i]+1));
-        }
-        return total;
-    }
-
-    // Cleaning the user input string and outputting a String array
-    private static String[] cleanString(String rawString) throws IOException {
-        rawString = rawString.replaceAll("[^a-zA-Z']", " ");
-        rawString = rawString.toLowerCase();
-
-            String wordTxt = Files.readString(Paths.get("Library/eng.txt"), Charset.defaultCharset());
-            String[] words = wordTxt.split("\\s");
-            for (String word : words){
-                word = word.toLowerCase();
-                rawString = rawString.replaceAll("\\b" + word +"\\b", "");
-            }
-        return Arrays.stream(rawString.split("\\s+")).filter(s -> !s.isEmpty()).toArray(String[]::new);
-    }
-
-    // Check if the user inputted store exists in the dataset
-    private static String searchForStore(Review[] reviewList, String userInput) {
-        for (Review r: reviewList) {
-            if (r.getBusiness_name().equalsIgnoreCase(userInput)) {
-                return r.getReview_text();
-            }
-        }
-        return null;
-    }
-
-    // To run the GUI
-    public static void main(String[] args){
-        SwingUtilities.invokeLater(new Runnable(){
-            @Override
-            public void run(){
-                new Main().setVisible(true);
-            }
-        });
+        //System.out.println(businessHashMap
 
     }
+
+
+
+
+
+
+
+
+
+
 }

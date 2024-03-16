@@ -4,41 +4,41 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 public class Business implements Serializable {
-    private int busId;
-    private String busName;
-    private String[] categories;
+    private String business_id;
+    private String name;
+    private String categories;
 
 
-    public int getBusId() {
-        return busId;
+    public String getBusiness_id() {
+        return business_id;
     }
 
-    public void setBusId(int busId) {
-        this.busId = busId;
+    public void setBusiness_id(String business_id) {
+        this.business_id = business_id;
     }
 
-    public String getBusName() {
-        return busName;
+    public String getName() {
+        return name;
     }
 
-    public void setBusName(String busName) {
-        this.busName = busName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String[] getAttributes() {
+    public String getCategories() {
         return categories;
     }
 
-    public void setCategories(String[] categories) {
+    public void setCategories(String categories) {
         this.categories = categories;
     }
 
     @Override
     public String toString() {
         return "business{" +
-                "busId=" + busId +
-                ", busName='" + busName + "'" +
-                ", categories=" + Arrays.toString(categories) +
+                "busId=" + business_id +
+                ", busName='" + name + "'" +
+                ", categories=" + categories +
                 '}';
     }
 }
