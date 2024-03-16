@@ -1,48 +1,44 @@
 package classes;
 
-public class Business {
+import java.io.Serializable;
+import java.util.Arrays;
 
-    private String business_id;
-    private String name;
-    private String address;
-    private String state;
-    private String postal_code;
-    private double stars;
+public class Business implements Serializable {
+    private int busId;
+    private String busName;
+    private String[] categories;
 
-    public double getStars() {
-        return stars;
+
+    public int getBusId() {
+        return busId;
     }
 
-    public String getBusiness_id() {
-        return business_id;
+    public void setBusId(int busId) {
+        this.busId = busId;
     }
 
-    public String getName() {
-        return name;
+    public String getBusName() {
+        return busName;
     }
 
-    public String getAddress() {
-        return address;
+    public void setBusName(String busName) {
+        this.busName = busName;
     }
 
-    public String getState() {
-        return state;
+    public String[] getAttributes() {
+        return categories;
     }
 
-    public String getPostal_code() {
-        return postal_code;
+    public void setCategories(String[] categories) {
+        this.categories = categories;
     }
 
     @Override
     public String toString() {
-        return "Business{" +
-                "business_id='" + business_id + '\'' +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", state='" + state + '\'' +
-                ", postal_code='" + postal_code + '\'' +
-                ", stars=" + stars +
+        return "business{" +
+                "busId=" + busId +
+                ", busName='" + busName + "'" +
+                ", categories=" + Arrays.toString(categories) +
                 '}';
     }
 }
-
