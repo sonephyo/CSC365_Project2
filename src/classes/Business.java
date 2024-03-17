@@ -4,9 +4,12 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 public class Business implements Serializable {
+
     private String business_id;
     private String name;
     private String categories;
+
+    private String[] categoriesArr;
 
 
     public String getBusiness_id() {
@@ -33,12 +36,20 @@ public class Business implements Serializable {
         this.categories = categories;
     }
 
+    public String[] getCategoriesArr() {
+        return categoriesArr;
+    }
+
+    public void setCategoriesArr(String[] categoriesArr) {
+        this.categoriesArr = categoriesArr;
+    }
+
     @Override
     public String toString() {
-        return "business{" +
-                "busId=" + business_id +
-                ", busName='" + name + "'" +
-                ", categories=" + categories +
+        return "Business{" +
+                "business_id='" + business_id + '\'' +
+                ", name='" + name + '\'' +
+                ", categoriesArr=" + Arrays.toString(categoriesArr) +
                 '}';
     }
 }
