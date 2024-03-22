@@ -1,3 +1,4 @@
+import bTree.BTree;
 import classes.Business;
 import classes.Review;
 import classes.Business;
@@ -13,6 +14,48 @@ public class Main {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
+//        BufferedReader br = new BufferedReader(new FileReader("src/database/businesses.json"));
+//
+//        // Building Gson
+//        GsonBuilder gb = new GsonBuilder();
+//        Gson gson = gb.create();
+
+        // Creating Serializable Files
+//        createSerFiles(br,gson);
+
+
+        File path = new File("src/files");
+        File[] files = path.listFiles();
+
+
+        BTree btree = new BTree(5);
+        // Deserializing and importing in BTree
+        for (int i = 0; i < Objects.requireNonNull(files).length; i++) {
+            if (files[i].isFile()) {
+                FileInputStream fileIn = new FileInputStream(files[i]);
+                ObjectInputStream in =  new ObjectInputStream(fileIn);
+
+                Business b1  = (Business) in.readObject();
+
+                String fileNameString = String.valueOf(files[i]).replaceAll("src/files/","");
+
+                btree.insert(b1.getName(), fileNameString);
+            }
+        }
+
+        btree.convertTreeToSerFile();
+
+        FileInputStream fileIn = new FileInputStream("src/btreeOutput/output.ser");
+        ObjectInputStream in =  new ObjectInputStream(fileIn);
+        BTree b = (BTree) in.readObject();
+
+        b.traverse();
+
+
+
+    }
+
+    public static void createSerFiles() throws IOException {
         BufferedReader br = new BufferedReader(new FileReader("src/database/businesses.json"));
 
         // Building Gson
