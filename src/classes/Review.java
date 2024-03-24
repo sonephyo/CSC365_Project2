@@ -1,11 +1,12 @@
 package classes;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 
-public class Review {
+public class Review implements Serializable {
 
     private String business_id;
 
@@ -45,6 +46,10 @@ public class Review {
         return business_id;
     }
 
+    public void setBusiness_id(String business_id) {
+        this.business_id = business_id;
+    }
+
     public double getStars() {
         return stars;
     }
@@ -56,6 +61,8 @@ public class Review {
     public void setTrueContainsWord(int changeIndex) {
         this.containsWord[changeIndex] = true;
     }
+
+
 
     public void setBusiness_name(String business_name) {
         this.business_name = business_name;

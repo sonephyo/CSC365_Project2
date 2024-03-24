@@ -13,6 +13,15 @@ public class Business implements Serializable {
 
     private String[] categoriesArr;
 
+    private String Rv_text;
+
+    public String getRv_text() {
+        return Rv_text;
+    }
+
+    public void setRv_text(String rv_text) {
+        Rv_text = rv_text;
+    }
 
     public String getBusiness_id() {
         return business_id;
@@ -51,7 +60,9 @@ public class Business implements Serializable {
         return "Business{" +
                 "business_id='" + business_id + '\'' +
                 ", name='" + name + '\'' +
+                ", categories='" + categories + '\'' +
                 ", categoriesArr=" + Arrays.toString(categoriesArr) +
+                ", Rv_text='" + Rv_text + '\'' +
                 '}';
     }
 }
