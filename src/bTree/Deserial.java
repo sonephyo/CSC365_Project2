@@ -17,12 +17,11 @@ public class Deserial implements Serializable {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         FileInputStream fileInputStream = new FileInputStream("src/files/0-3kCit8mt8cCjiQXDyg8w.ser");
         ObjectInputStream objectInputStream= new ObjectInputStream(fileInputStream);
-        Review r = (Review) objectInputStream.readObject();
+        Business r = (Business) objectInputStream.readObject();
         objectInputStream.close();
         fileInputStream.close();
         System.out.println("Business id: " + r.getBusiness_id());
-        System.out.println(("Business name: " + r.getBusiness_name()));
-        System.out.println("Review Text: " + r.getReview_text());
+        System.out.println(r.getRv_text());
 
     }
 
