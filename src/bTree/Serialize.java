@@ -1,7 +1,8 @@
+package bTree;
+
 import bTree.BTree;
 import classes.Business;
 import classes.Review;
-import classes.Business;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.*;
@@ -10,7 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 
-public class Main {
+public class Serialize {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
@@ -46,7 +47,7 @@ public class Main {
 
 
 
-        }
+    }
 
 
 
@@ -107,23 +108,3 @@ public class Main {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
