@@ -33,6 +33,9 @@ public class Serialize {
                 String fileNameString = String.valueOf(files[i]).replaceAll("src/files/","");
 
                 btree.insert(b1.getName(), fileNameString);
+
+                fileIn.close();
+                in.close();
             }
         }
 
