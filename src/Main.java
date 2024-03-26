@@ -3,9 +3,7 @@ import classes.Review;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -61,15 +59,32 @@ public class Main extends JFrame {
         pack();
         setLocationRelativeTo(null);
 
-        cateButton.addActionListener(e -> cluster());
+        cateButton.addActionListener(e -> {
+            try {
+                cluster();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (ClassNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         pack();
         setLocationRelativeTo(null);
 
 
     }
 
-    private void cluster(){
+    private void cluster() throws IOException, ClassNotFoundException {
         resultArea.append("Hello! This is button for cluster");
+        FileInputStream fileInputStream = new FileInputStream("src/files/0-Tim4ucmy8bNugnzKXG8g.ser");
+        ObjectInputStream objectInputStream= new ObjectInputStream(fileInputStream);
+        Business b = (Business) objectInputStream.readObject();
+        objectInputStream.close();
+        fileInputStream.close();
+        System.out.println("Business: " + b.getName());
+        System.out.println("Business ID : " + b.getBusiness_id());
+        System.out.println("Business Category: " + Arrays.toString(b.getCategoriesArr()));
+
     }
 
     private void search() {

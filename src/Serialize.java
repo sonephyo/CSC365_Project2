@@ -1,7 +1,7 @@
-package bTree;
-
+import bTree.BTree;
 import classes.Business;
 import classes.Review;
+import classes.Business;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.*;
@@ -14,21 +14,13 @@ public class Serialize {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
-//        BufferedReader br = new BufferedReader(new FileReader("src/database/businesses.json"));
-//
-//        // Building Gson
-//        GsonBuilder gb = new GsonBuilder();
-//        Gson gson = gb.create();
-
-        // Creating Serializable Files
-//        createSerFiles(br,gson);
-
+        createSerFiles();
 
         File path = new File("src/files");
         File[] files = path.listFiles();
 
 
-        BTree btree = new BTree(5);
+        BTree btree = new BTree(3);
         // Deserializing and importing in BTree
         for (int i = 0; i < Objects.requireNonNull(files).length; i++) {
             if (files[i].isFile()) {
@@ -37,9 +29,14 @@ public class Serialize {
 
                 Business b1  = (Business) in.readObject();
 
+
+
                 String fileNameString = String.valueOf(files[i]).replaceAll("src/files/","");
 
                 btree.insert(b1.getName(), fileNameString);
+
+                fileIn.close();
+                in.close();
             }
         }
 
@@ -53,7 +50,10 @@ public class Serialize {
 
 
 
+
     }
+
+
 
     public static void createSerFiles() throws IOException {
         BufferedReader br = new BufferedReader(new FileReader("src/database/businesses.json"));
@@ -68,6 +68,10 @@ public class Serialize {
         Hashtable<String, Business> businessHashtable = new Hashtable<>();
         while ((line = br.readLine()) != null) {
             Business b1 = gson.fromJson(line, Business.class);
+            if (b1.getCategories() != null) {
+                b1.setCategoriesArr(b1.getCategories().split(", "));
+                b1.setCategories(null);
+            }
             businessHashtable.put(b1.getBusiness_id(), b1);
         }
 
@@ -88,46 +92,29 @@ public class Serialize {
             Review r1 = gsonReview.fromJson(lineReview, Review.class);
             Business business = businessHashtable.get(r1.getBusiness_id());
             if (business != null && !uniqueBusinessNames.contains(business.getName())) {
-                r1.setBusiness_name(business.getName());
+                business.setRv_text(r1.getReview_text());
+
                 uniqueBusinessNames.add(business.getName());
                 reviewList[reviewcount] = r1;
+
+                String fileName = business.getBusiness_id() + ".ser";
+                FileOutputStream fileOut = new FileOutputStream("src/files/" + fileName);
+                ObjectOutputStream out = new ObjectOutputStream(fileOut);
+                out.writeObject(business);
+                out.close();
+                fileOut.close();
+                System.out.println("saved");
+
                 reviewcount++;
                 //uniqueBusinessNames.add(business.getName());
             }
         }
-        for (Review review : reviewList){
-            Business businessOutput = businessHashtable.get(review.getBusiness_id());
-//            System.out.println("Name: " + businessOutput.getName());
-//            System.out.println("Business ID: " + businessOutput.getBusiness_id());
-//            System.out.println("Review Text: " + review.getReview_text());
-            String fileName = businessOutput.getBusiness_id() + ".ser";
-            FileOutputStream fileOut = new FileOutputStream("src/files/" + fileName);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(businessOutput);
-            out.close();
-            fileOut.close();
-            System.out.println("saved");
 
-        }
+
 
     }
-    //testing
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

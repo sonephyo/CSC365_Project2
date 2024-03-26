@@ -1,10 +1,15 @@
 package bTree;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BTree implements Serializable {
     BTreeNode root;
     int t;
+
+    Set<String> valuesSet = new HashSet<>();
 
     public BTree(int t) {
         this.root = null;
@@ -15,6 +20,14 @@ public class BTree implements Serializable {
         if (root != null) {
             root.traverse();
         }
+    }
+
+    public Set<String> getValues() {
+        if (root != null) {
+            root.getValues(valuesSet);
+            return valuesSet;
+        }
+        return null;
     }
 
     BTreeNode search(String k) {

@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="53afda2c-9cb7-47fa-ac1b-930b3737c006" name="Changes" comment="" />
+    <list default="true" id="53afda2c-9cb7-47fa-ac1b-930b3737c006" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/Clustering.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bTree/BTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bTree/BTree.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bTree/BTreeNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bTree/BTreeNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bTree/Serialize.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serialize.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/btreeOutput/output.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/Business.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/Business.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -33,11 +42,14 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.Clustering.executor": "Run",
     "Application.Main.executor": "Run",
+    "Application.Serialize.executor": "Run",
+    "Application.Test.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "soney",
+    "git-widget-placeholder": "GUI",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/phonepyaesonephyo/Documents/Spring 2024/CSC365/CSC365_Project2",
     "node.js.detected.package.eslint": "true",
@@ -69,6 +81,7 @@
       <workItem from="1710700732018" duration="8962000" />
       <workItem from="1710860504166" duration="1141000" />
       <workItem from="1710995637954" duration="6992000" />
+      <workItem from="1711413335888" duration="9958000" />
     </task>
     <servers />
   </component>
@@ -85,5 +98,12 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="i" language="JAVA" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
