@@ -5,6 +5,12 @@ import classes.Business;
 import classes.Review;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import bTree.BTree;
+import classes.Business;
+import classes.Review;
+import classes.Business;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.*;
 import java.util.*;
 import java.io.FileReader;
@@ -29,6 +35,8 @@ public class Serialize {
                 ObjectInputStream in =  new ObjectInputStream(fileIn);
 
                 Business b1  = (Business) in.readObject();
+
+
 
                 String fileNameString = String.valueOf(files[i]).replaceAll("src/files/","");
 
@@ -67,6 +75,10 @@ public class Serialize {
         Hashtable<String, Business> businessHashtable = new Hashtable<>();
         while ((line = br.readLine()) != null) {
             Business b1 = gson.fromJson(line, Business.class);
+            if (b1.getCategories() != null) {
+                b1.setCategoriesArr(b1.getCategories().split(", "));
+                b1.setCategories(null);
+            }
             businessHashtable.put(b1.getBusiness_id(), b1);
         }
 
@@ -78,7 +90,7 @@ public class Serialize {
 
         String lineReview;
         int reviewcount = 0;
-        int reviewLengthToParse = 11000;
+        int reviewLengthToParse = 10000;
 
         Review[] reviewList = new Review[reviewLengthToParse];
         Set<String> uniqueBusinessNames = new HashSet<>(); // to keep track of unique business names
@@ -88,7 +100,6 @@ public class Serialize {
             Business business = businessHashtable.get(r1.getBusiness_id());
             if (business != null && !uniqueBusinessNames.contains(business.getName())) {
                 business.setRv_text(r1.getReview_text());
-
 
                 uniqueBusinessNames.add(business.getName());
                 reviewList[reviewcount] = r1;

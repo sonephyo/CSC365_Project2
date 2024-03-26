@@ -1,6 +1,8 @@
 package bTree;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Set;
 
 class BTreeNode implements Serializable {
     String[] keys;
@@ -9,6 +11,9 @@ class BTreeNode implements Serializable {
     BTreeNode[] C;
     int n;
     boolean leaf;
+
+
+
 
     public BTreeNode(int t, boolean leaf) {
         this.keys = new String[2 * t - 1];
@@ -88,6 +93,20 @@ class BTreeNode implements Serializable {
             C[n].traverse();
         }
     }
+
+
+    void getValues(Set<String> mainArrayset) {
+        for (int i = 0; i < n; i++) {
+            if (!leaf) {
+                C[i].getValues(mainArrayset);
+            }
+            mainArrayset.add(values[i]);
+        }
+        if (!leaf) {
+            C[n].getValues(mainArrayset);
+        }
+    }
+
 
     BTreeNode search(String k) {
         int i = 0;
