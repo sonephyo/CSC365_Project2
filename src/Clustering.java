@@ -10,13 +10,28 @@ import java.util.*;
 
 public class Clustering {
 
+    private static BTree b;
+
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         FileInputStream fileInputStream = new FileInputStream("src/btreeOutput/output.ser");
         ObjectInputStream objectInputStream= new ObjectInputStream(fileInputStream);
-        BTree b = (BTree) objectInputStream.readObject();
+        b = (BTree) objectInputStream.readObject();
         objectInputStream.close();
         fileInputStream.close();
 
+
+        weightedData("ew_Hhp12Silh3qjoPaW9IA.ser");
+
+
+
+
+
+
+
+
+    }
+
+    public static void weightedData(String medoidFilename) throws IOException, ClassNotFoundException {
 
         // Pre categorizing for clustering
         CustomMap<String, Business> businessHashMap = new CustomMap<>();
@@ -32,10 +47,8 @@ public class Clustering {
             businessReviewMap.add(i, b1.getRv_text());
         }
 
-
         // function for calculating weight depending on medoid and one review
-
-        String medoidReview = businessHashMap.get("ew_Hhp12Silh3qjoPaW9IA.ser").getRv_text();
+        String medoidReview = businessHashMap.get(medoidFilename).getRv_text();
 
         String[] medoidSplit = cleanString(medoidReview);
 
@@ -60,7 +73,7 @@ public class Clustering {
         int count = 0;
 
         for(String filename: b.getValues()) {
-            if (!filename.equalsIgnoreCase("ew_Hhp12Silh3qjoPaW9IA.ser")) {
+            if (!filename.equalsIgnoreCase(medoidFilename)) {
 
                 String[] cleanReviewData = cleanString(businessHashMap.get(filename).getRv_text());
 
@@ -88,7 +101,6 @@ public class Clustering {
 
             }
         }
-
 
         int i = 0;
         String[] businessNames = new String[businessHashMap.size()];
@@ -118,14 +130,9 @@ public class Clustering {
             weights[j+1] = key;
             businessNames[j+1] = value;
         }
-
-        for (int a = 0; a < 10; a++) {
-            System.out.println(businessNames[a] + " and " + weights[a]);
-        }
-
-
-
     }
+
+
 
 
     public static Business findFile(String filename) throws IOException, ClassNotFoundException {

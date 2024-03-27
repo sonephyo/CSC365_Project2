@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="53afda2c-9cb7-47fa-ac1b-930b3737c006" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/hashMap/CustomHashNode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/hashMap/CustomMap.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Clustering.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Clustering.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,7 +98,7 @@
       <workItem from="1710995637954" duration="6992000" />
       <workItem from="1711413335888" duration="10607000" />
       <workItem from="1711468684745" duration="605000" />
-      <workItem from="1711469907445" duration="9712000" />
+      <workItem from="1711469907445" duration="10733000" />
     </task>
     <servers />
   </component>
@@ -118,26 +115,5 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Clustering.java</url>
-          <line>37</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Clustering.java</url>
-          <line>39</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Clustering.java</url>
-          <line>64</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
