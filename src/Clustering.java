@@ -3,6 +3,7 @@ import classes.Business;
 import hashMap.CustomMap;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,6 +13,9 @@ public class Clustering {
 
     private static BTree b;
 
+
+
+
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         FileInputStream fileInputStream = new FileInputStream("src/btreeOutput/output.ser");
         ObjectInputStream objectInputStream= new ObjectInputStream(fileInputStream);
@@ -19,19 +23,49 @@ public class Clustering {
         objectInputStream.close();
         fileInputStream.close();
 
-
-        weightedData("ew_Hhp12Silh3qjoPaW9IA.ser");
-
+        String[] mediodNames = {"1-z7wd860Rii4kbEMCT8DA.ser","2-XK9zDgSKqOwSyyMwgjzA.ser", "4cK4FDxVNZxGDK-TFHzw5g.ser"};
 
 
+        String nonmediod = "2-XK9zDgSKqOwSyyMwgjzA.ser";
 
+        CustomMap<String, Double> cluster1WeightedData =  weightedData(mediodNames[0]);
+        CustomMap<String, Double> cluster2WeightedData =  weightedData(mediodNames[1]);
+        CustomMap<String, Double> cluster3WeightedData =  weightedData(mediodNames[2]);
 
+        // String - mediod one
+        CustomMap<String, ArrayList<Double>> clusterAssignment = new CustomMap<>();
 
+        Double[] test = new Double[3];
+        test[0] = cluster1WeightedData.get(nonmediod);
+        test[1] = cluster2WeightedData.get(nonmediod);
+        test[2] = cluster3WeightedData.get(nonmediod);
+
+        int maxIndex = 0;
+        for (int i = 0; i < test.length; i++) {
+            if (test[i] > test[maxIndex]) {
+                maxIndex = i;
+            }
+        }
+
+        ArrayList<Double> oldCluster =
+                clusterAssignment.get(mediodNames[maxIndex]);
+        oldCluster.add(test[maxIndex]);
+
+        clusterAssignment.add(
+                mediodNames[maxIndex],
+                oldCluster
+                );
 
 
     }
 
-    public static void weightedData(String medoidFilename) throws IOException, ClassNotFoundException {
+    public static void allocatingToSelectedCluster(String nonmediod, String[] mediodNames) {
+
+    }
+
+
+
+    public static CustomMap<String, Double> weightedData(String medoidFilename) throws IOException, ClassNotFoundException {
 
         // Pre categorizing for clustering
         CustomMap<String, Business> businessHashMap = new CustomMap<>();
@@ -103,33 +137,37 @@ public class Clustering {
         }
 
         int i = 0;
-        String[] businessNames = new String[businessHashMap.size()];
-        double[] weights = new double[businessHashMap.size()];
+
+        CustomMap<String, Double> weightValues = new CustomMap<>();
         for (String filename: b.getValues()) {
             totalWeightMap.add(filename, calculateWeight(countOfEachWordMap.get(filename), dfCount, businessHashMap.size()));
 //            System.out.println(businessHashMap.get(filename).getName() + calculateWeight(countOfEachWordMap.get(filename), dfCount, businessHashMap.size()));
 
-
-            businessNames[i] = businessHashMap.get(filename).getName();
-            weights[i] = calculateWeight(countOfEachWordMap.get(filename), dfCount, businessHashMap.size());
-            i++;
+            weightValues.add(
+                    businessHashMap.get(filename).getBusiness_id() + ".ser",
+                    calculateWeight(countOfEachWordMap.get(filename), dfCount, businessHashMap.size()));
 
         }
 
-        int n = weights.length;
-        for (int k = 0; k < n; k++) {
-            double key = weights[k];
-            String value = businessNames[k];
-            int j = k - 1;
+        return weightValues;
 
-            while (j >= 0 && weights[j] < key ) {
-                businessNames[j+1] = businessNames[j];
-                weights[j+1] = weights[j];
-                j = j -1;
-            }
-            weights[j+1] = key;
-            businessNames[j+1] = value;
-        }
+//
+//        int n = weights.length;
+//        for (int k = 0; k < n; k++) {
+//            double key = weights[k];
+//            String value = businessNames[k];
+//            int j = k - 1;
+//
+//            while (j >= 0 && weights[j] < key ) {
+//                businessNames[j+1] = businessNames[j];
+//                weights[j+1] = weights[j];
+//                j = j -1;
+//            }
+//            weights[j+1] = key;
+//            businessNames[j+1] = value;
+//        }
+
+
     }
 
 
