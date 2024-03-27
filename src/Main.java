@@ -75,6 +75,7 @@ public class Main extends JFrame {
     }
 
     private void cluster() throws IOException, ClassNotFoundException {
+        resultArea.setText("");
         resultArea.append("Hello! This is button for cluster");
         FileInputStream fileInputStream = new FileInputStream("src/files/0-Tim4ucmy8bNugnzKXG8g.ser");
         ObjectInputStream objectInputStream= new ObjectInputStream(fileInputStream);
