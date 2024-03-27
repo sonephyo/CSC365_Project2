@@ -177,9 +177,10 @@ public class Main extends JFrame {
 
 
             // Outputting two businesses with the highest total weight values.
-            int outputNumber = 2;
+            int outputNumber = 10;
             for (int i = 0; i < outputNumber; i++) {
 //                System.out.println("__________");
+//                System.out.println(reviewList[i].getBusiness_name());
 //                System.out.println(reviewList[i].getTotalWeight());
 //                System.out.println(reviewList[i].getReview_text());
                 Business businessOutput = businessHashtable.get(reviewList[i].getBusiness_id());

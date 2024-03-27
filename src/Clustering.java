@@ -1,5 +1,6 @@
 import bTree.BTree;
 import classes.Business;
+import hashMap.CustomMap;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -18,23 +19,23 @@ public class Clustering {
 
 
         // Pre categorizing for clustering
-        Map<String, Business> businessHashMap = new HashMap<>();
-        Map<String, String> businessReviewMap = new HashMap<>();
-        Map<String, int[]> countOfEachWordMap = new HashMap<>();
-        Map<String, boolean[]> containsWordMap = new HashMap<>();
-        Map<String, Double> totalWeightMap = new HashMap<>();
+        CustomMap<String, Business> businessHashMap = new CustomMap<>();
+        CustomMap<String, String> businessReviewMap = new CustomMap<>();
+        CustomMap<String, int[]> countOfEachWordMap = new CustomMap<>();
+        CustomMap<String, boolean[]> containsWordMap = new CustomMap<>();
+        CustomMap<String, Double> totalWeightMap = new CustomMap<>();
 
         // Making hashmap with all businesses
         for (String i: b.getValues()) {
             Business b1 = findFile(i);
-            businessHashMap.put(i, b1);
-            businessReviewMap.put(i, b1.getRv_text());
+            businessHashMap.add(i, b1);
+            businessReviewMap.add(i, b1.getRv_text());
         }
 
 
         // function for calculating weight depending on medoid and one review
 
-        String medoidReview = businessHashMap.get("1-z7wd860Rii4kbEMCT8DA.ser").getRv_text();
+        String medoidReview = businessHashMap.get("ew_Hhp12Silh3qjoPaW9IA.ser").getRv_text();
 
         String[] medoidSplit = cleanString(medoidReview);
 
@@ -45,19 +46,21 @@ public class Clustering {
         for (String i: b.getValues()) {
             int[] countOfEachWord = new int[medoidSplit.length];
             Arrays.fill(countOfEachWord, 0);
-            countOfEachWordMap.put(i, countOfEachWord);
+            countOfEachWordMap.add(i, countOfEachWord);
 
 
             boolean[] containsWord = new boolean[medoidSplit.length];
             Arrays.fill(containsWord, false);
-            containsWordMap.put(i, containsWord);
+            containsWordMap.add(i, containsWord);
         }
 
 
         b.traverse();
 
+        int count = 0;
+
         for(String filename: b.getValues()) {
-            if (!filename.equalsIgnoreCase("1-z7wd860Rii4kbEMCT8DA.ser")) {
+            if (!filename.equalsIgnoreCase("ew_Hhp12Silh3qjoPaW9IA.ser")) {
 
                 String[] cleanReviewData = cleanString(businessHashMap.get(filename).getRv_text());
 
@@ -77,31 +80,51 @@ public class Clustering {
                     }
                 }
 
+                count++;
+                if (count % 100 == 0) {
+                    System.out.println(count);
+                }
+
 
             }
         }
 
+
+        int i = 0;
+        String[] businessNames = new String[businessHashMap.size()];
+        double[] weights = new double[businessHashMap.size()];
         for (String filename: b.getValues()) {
-            totalWeightMap.put(filename, calculateWeight(countOfEachWordMap.get(filename), dfCount, businessHashMap.size()));
-            System.out.println(businessHashMap.get(filename).getName() + calculateWeight(countOfEachWordMap.get(filename), dfCount, businessHashMap.size()));
+            totalWeightMap.add(filename, calculateWeight(countOfEachWordMap.get(filename), dfCount, businessHashMap.size()));
+//            System.out.println(businessHashMap.get(filename).getName() + calculateWeight(countOfEachWordMap.get(filename), dfCount, businessHashMap.size()));
+
+
+            businessNames[i] = businessHashMap.get(filename).getName();
+            weights[i] = calculateWeight(countOfEachWordMap.get(filename), dfCount, businessHashMap.size());
+            i++;
+
+        }
+
+        int n = weights.length;
+        for (int k = 0; k < n; k++) {
+            double key = weights[k];
+            String value = businessNames[k];
+            int j = k - 1;
+
+            while (j >= 0 && weights[j] < key ) {
+                businessNames[j+1] = businessNames[j];
+                weights[j+1] = weights[j];
+                j = j -1;
+            }
+            weights[j+1] = key;
+            businessNames[j+1] = value;
+        }
+
+        for (int a = 0; a < 10; a++) {
+            System.out.println(businessNames[a] + " and " + weights[a]);
         }
 
 
-        System.out.println(medoidReview);
 
-
-        List<Map.Entry<String, Double>> entries = new ArrayList<>(totalWeightMap.entrySet());
-
-        entries.sort((e1, e2) -> Double.compare(e2.getValue(), e1.getValue()));
-
-        // Get the first three entries
-        List<Map.Entry<String, Double>> topThreeEntries = entries.subList(0, Math.min(3, entries.size()));
-
-        // Print the top 3 entries
-        System.out.println("Top 3 entries:");
-        for (Map.Entry<String, Double> entry : topThreeEntries) {
-            System.out.println(businessHashMap.get(entry.getKey()).getName() + ": " + entry.getValue());
-        }
     }
 
 
