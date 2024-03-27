@@ -1,6 +1,7 @@
 import bTree.BTree;
 import classes.Business;
 import hashMap.CustomMap;
+import weightedData.WeightedData;
 
 import java.io.*;
 import java.lang.reflect.Array;
@@ -9,10 +10,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+
 public class Clustering {
 
     private static BTree b;
 
+    private static Set<Set<String>> tracking = new HashSet<>();
+    private static CustomMap<String, Business> businessHashMap = new CustomMap<>();
 
 
 
@@ -23,52 +27,141 @@ public class Clustering {
         objectInputStream.close();
         fileInputStream.close();
 
-        String[] mediodNames = {"1-z7wd860Rii4kbEMCT8DA.ser","2-XK9zDgSKqOwSyyMwgjzA.ser", "4cK4FDxVNZxGDK-TFHzw5g.ser"};
+        String medoid1 = "1-z7wd860Rii4kbEMCT8DA.ser";
+        String medoid2 = "DJim4p_UABTUcIKsZTxARg.ser";
+        String medoid3 = "4cK4FDxVNZxGDK-TFHzw5g.ser";
+
+        Set<String> medoidNames1 = new HashSet<>(Set.of(
+                medoid1,
+                medoid2,
+                medoid3));
+
+        ArrayList<String> bTreeValues = b.getValues();
+
+        CustomMap<String, ArrayList<WeightedData>> chosen = allocatingToSelectedCluster(medoidNames1.toArray(new String[0]));
+
+        int iteration_count = 0;
+
+        for (String i: bTreeValues) {
 
 
-        String nonmediod = "2-XK9zDgSKqOwSyyMwgjzA.ser";
+            Set<String> medoidNames2 = changeOneValueFromSet(medoidNames1, bTreeValues);
 
-        CustomMap<String, Double> cluster1WeightedData =  weightedData(mediodNames[0]);
-        CustomMap<String, Double> cluster2WeightedData =  weightedData(mediodNames[1]);
-        CustomMap<String, Double> cluster3WeightedData =  weightedData(mediodNames[2]);
+            // String is the mediod names and value is the array of selected values
+            CustomMap<String, ArrayList<WeightedData>> dataAllocatedToClusters2 = allocatingToSelectedCluster(medoidNames2.toArray(new String[0]));
 
-        // String - mediod one
-        CustomMap<String, ArrayList<Double>> clusterAssignment = new CustomMap<>();
 
-        Double[] test = new Double[3];
-        test[0] = cluster1WeightedData.get(nonmediod);
-        test[1] = cluster2WeightedData.get(nonmediod);
-        test[2] = cluster3WeightedData.get(nonmediod);
+            chosen = compareCluster(chosen, dataAllocatedToClusters2);
+            System.out.println(calculateTotalCost(chosen));
 
-        int maxIndex = 0;
-        for (int i = 0; i < test.length; i++) {
-            if (test[i] > test[maxIndex]) {
-                maxIndex = i;
+            if (iteration_count >= 2) {
+                break;
             }
+            iteration_count++;
+
         }
 
-        ArrayList<Double> oldCluster =
-                clusterAssignment.get(mediodNames[maxIndex]);
-        oldCluster.add(test[maxIndex]);
+        ArrayList<String> chosenKeys = chosen.getAllKeys();
+        ArrayList<ArrayList<WeightedData>> chosenValues = chosen.getAllValues();
 
-        clusterAssignment.add(
-                mediodNames[maxIndex],
-                oldCluster
-                );
-
+        for (int i = 0 ; i < chosenKeys.size(); i++) {
+            System.out.println(businessHashMap.get(chosenKeys.get(i)));
+            System.out.println(calculateTotalCost(chosen));
+            System.out.println(chosenValues.get(i));
+            System.out.println("------------------------");
+            System.out.println("------------------------");
+            System.out.println("------------------------");
+            System.out.println("------------------------");
+            System.out.println("------------------------");
+        }
 
     }
 
-    public static void allocatingToSelectedCluster(String nonmediod, String[] mediodNames) {
+    public static Set<String> changeOneValueFromSet(Set<String> originalSet, ArrayList<String> values) {
+        Random r = new Random();
+        int randomIndex = r.nextInt(originalSet.size());
+        int randomValue = r.nextInt(values.size());
 
+       String[] arr =  originalSet.toArray(new String[0]);
+       arr[randomIndex] = values.get(randomValue);
+
+       if (tracking.contains( new HashSet<>(Arrays.asList(arr)))) {
+           return changeOneValueFromSet(originalSet, values);
+       } else {
+           return new HashSet<>(Arrays.asList(arr));
+       }
     }
 
+    private static CustomMap<String, ArrayList<WeightedData>> compareCluster(
+            CustomMap<String, ArrayList<WeightedData>> dataAllocatedToClusters1,
+            CustomMap<String, ArrayList<WeightedData>> dataAllocatedToClusters2) {
+
+        double cluster1cost = calculateTotalCost(dataAllocatedToClusters1);
+        double cluster2cost = calculateTotalCost(dataAllocatedToClusters2);
+        if (cluster1cost > cluster2cost) {
+            return dataAllocatedToClusters1;
+        } else if (cluster2cost > cluster1cost) {
+            return dataAllocatedToClusters2;
+        }
+        return dataAllocatedToClusters1;
+    }
+
+    private static double calculateTotalCost(CustomMap<String, ArrayList<WeightedData>> dataAllocatedToClusters) {
+
+        ArrayList<ArrayList<WeightedData>> a = dataAllocatedToClusters.getAllValues();
+        double total = 0;
+        for(ArrayList<WeightedData> b: a) {
+            double sumPart = 0;
+            for (WeightedData d: b) {
+                sumPart += d.getValue();
+            }
+            total = total + sumPart;
+        }
+
+        return total;
+    }
+
+    public static CustomMap<String, ArrayList<WeightedData>> allocatingToSelectedCluster(String[] medoidNames) throws IOException, ClassNotFoundException {
+
+        tracking.add(new HashSet<>(List.of(medoidNames)));
+
+        CustomMap<String, Double> cluster1WeightedData =  weightedData(medoidNames[0]);
+        CustomMap<String, Double> cluster2WeightedData =  weightedData(medoidNames[1]);
+        CustomMap<String, Double> cluster3WeightedData =  weightedData(medoidNames[2]);
+
+
+        // String - medoid one
+        CustomMap<String, ArrayList<WeightedData>> clusterAssignment = new CustomMap<>();
+
+        for (String filename: b.getValues()) {
+            Double[] test = new Double[3];
+            test[0] = cluster1WeightedData.get(filename);
+            test[1] = cluster2WeightedData.get(filename);
+            test[2] = cluster3WeightedData.get(filename);
+
+            int maxIndex = 0;
+            for (int i = 0; i < test.length; i++) {
+                if (test[i] > test[maxIndex]) {
+                    maxIndex = i;
+                }
+            }
+
+            ArrayList<WeightedData> oldClusterAdd = clusterAssignment.get(medoidNames[maxIndex]) !=null ? clusterAssignment.get(medoidNames[maxIndex]) : new ArrayList<>();
+            WeightedData wd = new WeightedData(filename,test[maxIndex]);
+            oldClusterAdd.add(wd);
+
+            clusterAssignment.add(
+                    medoidNames[maxIndex],
+                    oldClusterAdd
+            );
+        }
+        return clusterAssignment;
+    }
 
 
     public static CustomMap<String, Double> weightedData(String medoidFilename) throws IOException, ClassNotFoundException {
 
         // Pre categorizing for clustering
-        CustomMap<String, Business> businessHashMap = new CustomMap<>();
         CustomMap<String, String> businessReviewMap = new CustomMap<>();
         CustomMap<String, int[]> countOfEachWordMap = new CustomMap<>();
         CustomMap<String, boolean[]> containsWordMap = new CustomMap<>();
@@ -102,8 +195,6 @@ public class Clustering {
         }
 
 
-        b.traverse();
-
         int count = 0;
 
         for(String filename: b.getValues()) {
@@ -128,7 +219,7 @@ public class Clustering {
                 }
 
                 count++;
-                if (count % 100 == 0) {
+                if (count % 1000 == 0) {
                     System.out.println(count);
                 }
 
@@ -136,9 +227,8 @@ public class Clustering {
             }
         }
 
-        int i = 0;
-
         CustomMap<String, Double> weightValues = new CustomMap<>();
+        CustomMap<String, String> weightValuesNames = new CustomMap<>();
         for (String filename: b.getValues()) {
             totalWeightMap.add(filename, calculateWeight(countOfEachWordMap.get(filename), dfCount, businessHashMap.size()));
 //            System.out.println(businessHashMap.get(filename).getName() + calculateWeight(countOfEachWordMap.get(filename), dfCount, businessHashMap.size()));
@@ -146,27 +236,14 @@ public class Clustering {
             weightValues.add(
                     businessHashMap.get(filename).getBusiness_id() + ".ser",
                     calculateWeight(countOfEachWordMap.get(filename), dfCount, businessHashMap.size()));
+            weightValuesNames.add(
+                    businessHashMap.get(filename).getBusiness_id() + ".ser",
+                    businessHashMap.get(filename).getName()
+            );
 
         }
 
         return weightValues;
-
-//
-//        int n = weights.length;
-//        for (int k = 0; k < n; k++) {
-//            double key = weights[k];
-//            String value = businessNames[k];
-//            int j = k - 1;
-//
-//            while (j >= 0 && weights[j] < key ) {
-//                businessNames[j+1] = businessNames[j];
-//                weights[j+1] = weights[j];
-//                j = j -1;
-//            }
-//            weights[j+1] = key;
-//            businessNames[j+1] = value;
-//        }
-
 
     }
 
@@ -177,8 +254,11 @@ public class Clustering {
 
         FileInputStream fileIn = new FileInputStream("src/files/" + filename);
         ObjectInputStream in =  new ObjectInputStream(fileIn);
+        Object findOutput = in.readObject();
+        fileIn.close();
+        in.close();
 
-        return (Business) in.readObject();
+        return (Business) findOutput;
 
     }
 
@@ -203,9 +283,6 @@ public class Clustering {
         }
         return total;
     }
-
-
-
 
 
 }

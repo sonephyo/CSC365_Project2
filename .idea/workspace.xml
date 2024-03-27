@@ -5,8 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="53afda2c-9cb7-47fa-ac1b-930b3737c006" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/weightedData/WeightedData.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Clustering.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Clustering.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bTree/BTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bTree/BTree.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/btreeOutput/output.ser" beforeDir="false" afterPath="$PROJECT_DIR$/src/btreeOutput/output.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hashMap/CustomMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/hashMap/CustomMap.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +41,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.Clustering.executor": "Run",
-    "Application.CustomMap.executor": "Debug",
+    "Application.CustomMap.executor": "Run",
     "Application.Main.executor": "Run",
     "Application.Serialize.executor": "Run",
     "Application.Test.executor": "Run",
@@ -98,7 +102,7 @@
       <workItem from="1710995637954" duration="6992000" />
       <workItem from="1711413335888" duration="10607000" />
       <workItem from="1711468684745" duration="605000" />
-      <workItem from="1711469907445" duration="19386000" />
+      <workItem from="1711469907445" duration="42802000" />
     </task>
     <servers />
   </component>

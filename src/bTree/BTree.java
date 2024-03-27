@@ -22,10 +22,10 @@ public class BTree implements Serializable {
         }
     }
 
-    public Set<String> getValues() {
+    public ArrayList<String> getValues() {
         if (root != null) {
             root.getValues(valuesSet);
-            return valuesSet;
+            return new ArrayList<>(valuesSet);
         }
         return null;
     }

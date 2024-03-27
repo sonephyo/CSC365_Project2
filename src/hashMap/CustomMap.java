@@ -1,8 +1,7 @@
 package hashMap;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 
 public class CustomMap<K,V> {
 
@@ -100,6 +99,49 @@ public class CustomMap<K,V> {
         return null;
     }
 
+    public ArrayList<V> getAllValues() {
+        ArrayList<V> allValues = new ArrayList<>();
+
+        for (CustomHashNode<K,V> node: bucketArray) {
+            while (node != null) {
+                allValues.add(node.value);
+                node = node.next;
+            }
+        }
+
+        return allValues;
+    }
+
+    public ArrayList<K> getAllKeys() {
+        ArrayList<K> allKeys = new ArrayList<>();
+
+        for (CustomHashNode<K,V> node: bucketArray) {
+            while (node != null) {
+                allKeys.add(node.key);
+                node = node.next;
+            }
+        }
+        return allKeys;
+    }
+
+
+    public static void main(String[] args) {
+
+        Set<String> medoidNames2 = new HashSet<>(Set.of(
+                "1-z7wd860Rii4kbEMCT8DA.ser",
+                "2-XK9zDgSKqOwSyyMwgjzA.ser",
+                "1bNU0VL7S7_-gVgLJAy9gQ.ser"));
+        Set<String> medoidNames1 = new HashSet<>(Set.of(
+                "2-XK9zDgSKqOwSyyMwgjzA.ser",
+                "1-z7wd860Rii4kbEMCT8DA.ser",
+
+                "1bNU0VL7S7_-gVgLJAy9gwQ.ser"));
+
+        Set<Set<String>> tracking = new HashSet<>();
+        tracking.add(medoidNames1);
+        tracking.add(medoidNames2);
+        System.out.println(tracking);
+    }
 
 
 }
