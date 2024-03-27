@@ -52,7 +52,7 @@ public class Clustering {
 
 
             chosen = compareCluster(chosen, dataAllocatedToClusters2);
-            System.out.println(calculateTotalCost(chosen));
+            //System.out.println(calculateTotalCost(chosen));
 
             if (iteration_count >= 2) {
                 break;
