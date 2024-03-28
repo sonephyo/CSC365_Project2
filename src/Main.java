@@ -31,21 +31,9 @@ public class Main extends JFrame {
 
     public Main(){
         setTitle("Business Recommendar");
-//        Font titleFont = new Font("Arial", Font.BOLD, 24);
-//        setFont(titleFont);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-
-
-
-//        JPanel titleBarPanel = new JPanel(new BorderLayout());
-//        titleBarPanel.setBackground(Color.YELLOW);
-//        JLabel titleLabel = new JLabel("Business Recommender", SwingConstants.CENTER);
-//        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
-//        titleBarPanel.add(titleLabel, BorderLayout.CENTER);
-//        add(titleBarPanel, BorderLayout.NORTH);
-//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
         comboBoxModel.addElement("Moon's Kitchen Cafe");
@@ -98,16 +86,6 @@ public class Main extends JFrame {
 
     private void cluster() throws IOException, ClassNotFoundException {
 
-//        resultArea.append("Hello! This is button for cluster");
-//        FileInputStream fileInputStream = new FileInputStream("src/files/0-Tim4ucmy8bNugnzKXG8g.ser");
-//        ObjectInputStream objectInputStream= new ObjectInputStream(fileInputStream);
-//        Business b = (Business) objectInputStream.readObject();
-//        objectInputStream.close();
-//        fileInputStream.close();
-//        System.out.println("Business: " + b.getName());
-//        System.out.println("Business ID : " + b.getBusiness_id());
-//        System.out.println("Business Category: " + Arrays.toString(b.getCategoriesArr()));
-
         resultArea.setText("");
 
         Clustering c1 = new Clustering();
@@ -120,6 +98,7 @@ public class Main extends JFrame {
         for (String key: keys) {
             resultArea.append("-------"  + "\n");
             resultArea.append("Medoid business name: " + businessMap.get(key).getName()  + "\n");
+            resultArea.append("The keys in the cluster for above medoid: " + "\n");
             ArrayList<WeightedData> weightedDataArrayList = output.get(key);
             weightedDataArrayList.sort(Comparator.comparingDouble(WeightedData::getValue).reversed());
             for (int i = 0; i < 3; i++) {

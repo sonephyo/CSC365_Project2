@@ -4,18 +4,21 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Set;
 
-class BTreeNode implements Serializable {
-    String[] keys;
-    String[] values;
-    int t;
-    BTreeNode[] C;
-    int n;
-    boolean leaf;
+//properties of B-tree node
+//methods for insertion, splitting, traversal, values retrieval, and searching
+//each node can hold multiple keys and values
+class BTreeNode implements Serializable { //represent a node in a B-Tree
+    String[] keys; //array to store keys
+    String[] values; //array to store corresponding values associated with keys
+    int t; //minimum degree
+    BTreeNode[] C; //to store child nodes
+    int n; //number of keys stored in the node
+    boolean leaf; //indicate whether the node is a leaf node
 
 
 
 
-    public BTreeNode(int t, boolean leaf) {
+    public BTreeNode(int t, boolean leaf) { //constructor
         this.keys = new String[2 * t - 1];
         this.values = new String[2 * t - 1];
         this.t = t;
@@ -24,7 +27,7 @@ class BTreeNode implements Serializable {
         this.leaf = leaf;
     }
 
-    void insertNonFull(String k, String j) {
+    void insertNonFull(String k, String j) { //insertion
         int i = n - 1;
         if (leaf) {
             // put the number in the node to its order
@@ -81,7 +84,7 @@ class BTreeNode implements Serializable {
         n++;
     }
 
-    void traverse() {
+    void traverse() { //traverses
         for (int i = 0; i < n; i++) {
             if (!leaf) {
                 C[i].traverse();
@@ -95,7 +98,7 @@ class BTreeNode implements Serializable {
     }
 
 
-    void getValues(Set<String> mainArrayset) {
+    void getValues(Set<String> mainArrayset) { //retrieves all the values in subtree
         for (int i = 0; i < n; i++) {
             if (!leaf) {
                 C[i].getValues(mainArrayset);
@@ -108,7 +111,7 @@ class BTreeNode implements Serializable {
     }
 
 
-    BTreeNode search(String k) {
+    BTreeNode search(String k) { //search method, search for k key in the subtree
         int i = 0;
         while (i < n && k.compareTo(keys[i]) > 0)  {
             i++;

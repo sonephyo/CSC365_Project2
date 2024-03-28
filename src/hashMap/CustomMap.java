@@ -3,17 +3,19 @@ package hashMap;
 import java.lang.reflect.Array;
 import java.util.*;
 
+//implementation of a hash map using separate chaining for handling collision
 public class CustomMap<K,V> {
 
+    //array of linked lists(buckets( where each buckets stores nodes(key-value)
     private ArrayList<CustomHashNode<K,V>> bucketArray;
 
-    private int numBuckets; // capacity of arrayList
+    private int numBuckets; // capacity of arrayList/number of buckets
 
-    private int size; // input size of arrayList
+    private int size; // input size of arrayList/number of elements
 
-    public CustomMap() {
+    public CustomMap() { //constructor
         bucketArray = new ArrayList<>();
-        numBuckets = 10;
+        numBuckets = 10; //default capacity to 10
         size = 0;
         for (int i = 0; i < numBuckets; i++) {
             bucketArray.add(null);
@@ -22,24 +24,25 @@ public class CustomMap<K,V> {
 
     public int size() {
         return size;
-    }
+    } //return the number of elements
 
     public boolean isEmpty() {
         return size() == 0;
-    }
+    } //check if the map is empty
 
+    //compute hash Code for a given key
     private final int hashCode (K key) {
         return Objects.hashCode(key);
     }
 
-    private int getBucketIndex(K key) {
+    private int getBucketIndex(K key) { //compute the index of the bucket for given key
         int hashCode = hashCode(key);
         int index = hashCode % numBuckets;
         index = index < 0 ? index * -1 : index;
         return index;
     }
 
-    public void add(K key, V value) {
+    public void add(K key, V value) { //add key-value pair, if exists, update
         int bucketIndex = getBucketIndex(key);
         int hashCode = hashCode(key);
 
@@ -83,7 +86,7 @@ public class CustomMap<K,V> {
 
     }
 
-    public V get(K key) {
+    public V get(K key) { //retrieve the value associated with a given key
         int bucketIndex = getBucketIndex(key);
         int hashCode = hashCode(key);
 
@@ -99,7 +102,7 @@ public class CustomMap<K,V> {
         return null;
     }
 
-    public ArrayList<V> getAllValues() {
+    public ArrayList<V> getAllValues() { //retrieves all the values stored in the map
         ArrayList<V> allValues = new ArrayList<>();
 
         for (CustomHashNode<K,V> node: bucketArray) {
@@ -112,7 +115,7 @@ public class CustomMap<K,V> {
         return allValues;
     }
 
-    public ArrayList<K> getAllKeys() {
+    public ArrayList<K> getAllKeys() { //retrieves all keys stored in the map
         ArrayList<K> allKeys = new ArrayList<>();
 
         for (CustomHashNode<K,V> node: bucketArray) {
@@ -125,7 +128,7 @@ public class CustomMap<K,V> {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { //testing Custom Map
 
         Set<String> medoidNames2 = new HashSet<>(Set.of(
                 "1-z7wd860Rii4kbEMCT8DA.ser",
