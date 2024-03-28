@@ -9,6 +9,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class Clustering {
@@ -52,9 +53,9 @@ public class Clustering {
 
 
             chosen = compareCluster(chosen, dataAllocatedToClusters2);
-            System.out.println(calculateTotalCost(chosen));
+            System.out.println("Current chosen: " + calculateTotalCost(chosen));
 
-            if (iteration_count >= 2) {
+            if (iteration_count >= 20) {
                 break;
             }
             iteration_count++;
@@ -67,6 +68,8 @@ public class Clustering {
         for (int i = 0 ; i < chosenKeys.size(); i++) {
             System.out.println(businessHashMap.get(chosenKeys.get(i)));
             System.out.println(calculateTotalCost(chosen));
+            ArrayList<WeightedData> output = chosenValues.get(i);
+            output.sort(Comparator.comparingDouble(WeightedData::getValue));
             System.out.println(chosenValues.get(i));
             System.out.println("------------------------");
             System.out.println("------------------------");
@@ -219,7 +222,7 @@ public class Clustering {
                 }
 
                 count++;
-                if (count % 1000 == 0) {
+                if (count % 5000 == 0) {
                     System.out.println(count);
                 }
 

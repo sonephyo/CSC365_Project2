@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="53afda2c-9cb7-47fa-ac1b-930b3737c006" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/weightedData/WeightedData.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Clustering.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Clustering.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bTree/BTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bTree/BTree.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/btreeOutput/output.ser" beforeDir="false" afterPath="$PROJECT_DIR$/src/btreeOutput/output.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/hashMap/CustomMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/hashMap/CustomMap.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,28 +34,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Clustering.executor": "Run",
-    "Application.CustomMap.executor": "Run",
-    "Application.Main.executor": "Run",
-    "Application.Serialize.executor": "Run",
-    "Application.Test.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "GUI",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/phonepyaesonephyo/Documents/Spring 2024/CSC365/CSC365_Project2",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Clustering.executor&quot;: &quot;Run&quot;,
+    &quot;Application.CustomMap.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Serialize.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;GUI&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/phonepyaesonephyo/Documents/Spring 2024/CSC365/CSC365_Project2&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="CustomMap" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="hashMap.CustomMap" />
@@ -103,6 +99,7 @@
       <workItem from="1711413335888" duration="10607000" />
       <workItem from="1711468684745" duration="605000" />
       <workItem from="1711469907445" duration="42802000" />
+      <workItem from="1711575994334" duration="1079000" />
     </task>
     <servers />
   </component>
