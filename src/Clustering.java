@@ -4,41 +4,62 @@ import hashMap.CustomMap;
 import weightedData.WeightedData;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 public class Clustering {
 
-    private static BTree b;
+    private  BTree b;
 
-    private static Set<Set<String>> tracking = new HashSet<>();
-    private static CustomMap<String, Business> businessHashMap = new CustomMap<>();
+    private Set<Set<String>> tracking = new HashSet<>();
+    private CustomMap<String, Business> businessHashMap = new CustomMap<>();
 
+    private CustomMap<String, String> businessReviewMap = new CustomMap<>();
 
+    private Set<Integer> trackingSerFilesRandomIndex = new HashSet<>();
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public CustomMap<String, Business> getBusinessHashMap() {
+        return businessHashMap;
+    }
+
+    public CustomMap<String, ArrayList<WeightedData>> run() throws IOException, ClassNotFoundException {
         FileInputStream fileInputStream = new FileInputStream("src/btreeOutput/output.ser");
         ObjectInputStream objectInputStream= new ObjectInputStream(fileInputStream);
         b = (BTree) objectInputStream.readObject();
         objectInputStream.close();
         fileInputStream.close();
 
-        String medoid1 = "1-z7wd860Rii4kbEMCT8DA.ser";
-        String medoid2 = "DJim4p_UABTUcIKsZTxARg.ser";
-        String medoid3 = "4cK4FDxVNZxGDK-TFHzw5g.ser";
+        // Making hashmap with all businesses
+        for (String i: b.getValues()) {
+            Business b1 = findFile(i);
+            businessHashMap.add(i, b1);
+            businessReviewMap.add(i, b1.getRv_text());
+        }
+        
+        ArrayList<String> allSerFiles =  b.getValues();
+
+    
+        String medoid1 = getRandomSerFile(allSerFiles);
+        String medoid2 = getRandomSerFile(allSerFiles);
+        String medoid3 = getRandomSerFile(allSerFiles);
+        String medoid4 = getRandomSerFile(allSerFiles);
+        String medoid5 = getRandomSerFile(allSerFiles);
 
         Set<String> medoidNames1 = new HashSet<>(Set.of(
                 medoid1,
                 medoid2,
-                medoid3));
+                medoid3,
+                medoid4,
+                medoid5
+        ));
 
         ArrayList<String> bTreeValues = b.getValues();
 
+        // Clustering
+        // String - medoid
         CustomMap<String, ArrayList<WeightedData>> chosen = allocatingToSelectedCluster(medoidNames1.toArray(new String[0]));
 
         int iteration_count = 0;
@@ -54,33 +75,31 @@ public class Clustering {
 
             chosen = compareCluster(chosen, dataAllocatedToClusters2);
             System.out.println("Current chosen: " + calculateTotalCost(chosen));
+            //System.out.println(calculateTotalCost(chosen));
 
-            if (iteration_count >= 20) {
+            if (iteration_count >=10) {
                 break;
             }
             iteration_count++;
 
         }
 
-        ArrayList<String> chosenKeys = chosen.getAllKeys();
-        ArrayList<ArrayList<WeightedData>> chosenValues = chosen.getAllValues();
-
-        for (int i = 0 ; i < chosenKeys.size(); i++) {
-            System.out.println(businessHashMap.get(chosenKeys.get(i)));
-            System.out.println(calculateTotalCost(chosen));
-            ArrayList<WeightedData> output = chosenValues.get(i);
-            output.sort(Comparator.comparingDouble(WeightedData::getValue));
-            System.out.println(chosenValues.get(i));
-            System.out.println("------------------------");
-            System.out.println("------------------------");
-            System.out.println("------------------------");
-            System.out.println("------------------------");
-            System.out.println("------------------------");
-        }
+        return chosen;
 
     }
 
-    public static Set<String> changeOneValueFromSet(Set<String> originalSet, ArrayList<String> values) {
+
+    public String getRandomSerFile(ArrayList<String> allSerFiles) {
+        Random r = new Random();
+        int randomSerIndex = r.nextInt(allSerFiles.size());
+        while (trackingSerFilesRandomIndex.contains(randomSerIndex)) {
+            randomSerIndex = r.nextInt(allSerFiles.size());
+        }
+        trackingSerFilesRandomIndex.add(randomSerIndex);
+        return allSerFiles.get(randomSerIndex);
+    }
+
+    public Set<String> changeOneValueFromSet(Set<String> originalSet, ArrayList<String> values) {
         Random r = new Random();
         int randomIndex = r.nextInt(originalSet.size());
         int randomValue = r.nextInt(values.size());
@@ -95,7 +114,7 @@ public class Clustering {
        }
     }
 
-    private static CustomMap<String, ArrayList<WeightedData>> compareCluster(
+    private CustomMap<String, ArrayList<WeightedData>> compareCluster(
             CustomMap<String, ArrayList<WeightedData>> dataAllocatedToClusters1,
             CustomMap<String, ArrayList<WeightedData>> dataAllocatedToClusters2) {
 
@@ -109,7 +128,7 @@ public class Clustering {
         return dataAllocatedToClusters1;
     }
 
-    private static double calculateTotalCost(CustomMap<String, ArrayList<WeightedData>> dataAllocatedToClusters) {
+    public double calculateTotalCost(CustomMap<String, ArrayList<WeightedData>> dataAllocatedToClusters) {
 
         ArrayList<ArrayList<WeightedData>> a = dataAllocatedToClusters.getAllValues();
         double total = 0;
@@ -124,23 +143,28 @@ public class Clustering {
         return total;
     }
 
-    public static CustomMap<String, ArrayList<WeightedData>> allocatingToSelectedCluster(String[] medoidNames) throws IOException, ClassNotFoundException {
+    public CustomMap<String, ArrayList<WeightedData>> allocatingToSelectedCluster(String[] medoidNames) throws IOException, ClassNotFoundException {
 
         tracking.add(new HashSet<>(List.of(medoidNames)));
 
         CustomMap<String, Double> cluster1WeightedData =  weightedData(medoidNames[0]);
         CustomMap<String, Double> cluster2WeightedData =  weightedData(medoidNames[1]);
         CustomMap<String, Double> cluster3WeightedData =  weightedData(medoidNames[2]);
+        CustomMap<String, Double> cluster4WeightedData =  weightedData(medoidNames[3]);
+        CustomMap<String, Double> cluster5WeightedData =  weightedData(medoidNames[4]);
 
 
         // String - medoid one
         CustomMap<String, ArrayList<WeightedData>> clusterAssignment = new CustomMap<>();
 
         for (String filename: b.getValues()) {
-            Double[] test = new Double[3];
+            Double[] test = new Double[medoidNames.length];
+
             test[0] = cluster1WeightedData.get(filename);
             test[1] = cluster2WeightedData.get(filename);
             test[2] = cluster3WeightedData.get(filename);
+            test[3] = cluster4WeightedData.get(filename);
+            test[4] = cluster5WeightedData.get(filename);
 
             int maxIndex = 0;
             for (int i = 0; i < test.length; i++) {
@@ -158,24 +182,20 @@ public class Clustering {
                     oldClusterAdd
             );
         }
+
+
         return clusterAssignment;
     }
 
 
-    public static CustomMap<String, Double> weightedData(String medoidFilename) throws IOException, ClassNotFoundException {
+    public CustomMap<String, Double> weightedData(String medoidFilename) throws IOException, ClassNotFoundException {
 
         // Pre categorizing for clustering
-        CustomMap<String, String> businessReviewMap = new CustomMap<>();
         CustomMap<String, int[]> countOfEachWordMap = new CustomMap<>();
         CustomMap<String, boolean[]> containsWordMap = new CustomMap<>();
         CustomMap<String, Double> totalWeightMap = new CustomMap<>();
 
-        // Making hashmap with all businesses
-        for (String i: b.getValues()) {
-            Business b1 = findFile(i);
-            businessHashMap.add(i, b1);
-            businessReviewMap.add(i, b1.getRv_text());
-        }
+
 
         // function for calculating weight depending on medoid and one review
         String medoidReview = businessHashMap.get(medoidFilename).getRv_text();
@@ -222,7 +242,7 @@ public class Clustering {
                 }
 
                 count++;
-                if (count % 5000 == 0) {
+                if (count % 1000 == 0) {
                     System.out.println(count);
                 }
 
@@ -253,7 +273,7 @@ public class Clustering {
 
 
 
-    public static Business findFile(String filename) throws IOException, ClassNotFoundException {
+    public Business findFile(String filename) throws IOException, ClassNotFoundException {
 
         FileInputStream fileIn = new FileInputStream("src/files/" + filename);
         ObjectInputStream in =  new ObjectInputStream(fileIn);
@@ -266,7 +286,7 @@ public class Clustering {
     }
 
     // Cleaning the user input string and outputting a String array
-    private static String[] cleanString(String rawString) throws IOException {
+    private String[] cleanString(String rawString) throws IOException {
         rawString = rawString.replaceAll("[^a-zA-Z']", " ");
         rawString = rawString.toLowerCase();
 
@@ -279,7 +299,7 @@ public class Clustering {
         return Arrays.stream(rawString.split("\\s+")).filter(s -> !s.isEmpty()).toArray(String[]::new);
     }
 
-    private static double calculateWeight(int[] tfData,int[] dfData, int totalReview) {
+    private double calculateWeight(int[] tfData,int[] dfData, int totalReview) {
         double total = 0;
         for (int i = 0; i < tfData.length; i++) {
             total += Math.log10(1+tfData[i])*((double) totalReview /(dfData[i]+1));

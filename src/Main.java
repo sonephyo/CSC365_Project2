@@ -2,11 +2,18 @@ import classes.Business;
 import classes.Review;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import hashMap.CustomMap;
+import weightedData.WeightedData;
+
+import javax.swing.border.LineBorder;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Hashtable;
@@ -20,71 +27,107 @@ public class Main extends JFrame {
     private JTextArea resultArea;
 
     private JButton cateButton;
+    private JPanel titleBarPanel;
 
     public Main(){
         setTitle("Business Recommendar");
+//        Font titleFont = new Font("Arial", Font.BOLD, 24);
+//        setFont(titleFont);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
+
+
+
+//        JPanel titleBarPanel = new JPanel(new BorderLayout());
+//        titleBarPanel.setBackground(Color.YELLOW);
+//        JLabel titleLabel = new JLabel("Business Recommender", SwingConstants.CENTER);
+//        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+//        titleBarPanel.add(titleLabel, BorderLayout.CENTER);
+//        add(titleBarPanel, BorderLayout.NORTH);
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
-        comboBoxModel.addElement(("Moon's Kitchen Cafe"));
-        comboBoxModel.addElement(("Thai Legacy Restaurant"));
-        comboBoxModel.addElement(("Blues City Deli"));
-        comboBoxModel.addElement(("New India's Kitchen"));
-        comboBoxModel.addElement(("Enterprise Rent-A-Car"));
-        comboBoxModel.addElement(("EATS! American Grill"));
-        comboBoxModel.addElement(("Helena Avenue Bakery"));
-        comboBoxModel.addElement(("Yolklore"));
-        comboBoxModel.addElement(("Zimmer's Seafood"));
-        comboBoxModel.addElement(("Target"));
+        comboBoxModel.addElement("Moon's Kitchen Cafe");
+        comboBoxModel.addElement("Thai Legacy Restaurant");
+        comboBoxModel.addElement("Blues City Deli");
+        comboBoxModel.addElement("New India's Kitchen");
+        comboBoxModel.addElement("Enterprise Rent-A-Car");
+        comboBoxModel.addElement("EATS! American Grill");
+        comboBoxModel.addElement("Helena Avenue Bakery");
+        comboBoxModel.addElement("Yolklore");
+        comboBoxModel.addElement("Zimmer's Seafood");
+        comboBoxModel.addElement("Target");
 
         userInputField = new JComboBox<>(comboBoxModel);
         userInputField.setEditable(true);
-        resultArea = new JTextArea();
-
-
-        cateButton = new JButton("Cluster");
         searchButton = new JButton("Search");
+        searchButton.setBackground(Color.BLUE);
+        cateButton = new JButton("Cluster");
         resultArea = new JTextArea();
+        resultArea.setEditable(false);
 
-        JPanel inputPanel = new JPanel(new FlowLayout());
-        inputPanel.add(new JLabel("Enter a business name:  "));
-        inputPanel.add(userInputField);
-        inputPanel.add(searchButton);
-        inputPanel.add(cateButton);
+        // Input Panel
+        JPanel inputPanel = new JPanel(new BorderLayout());
+        JPanel searchPanel = new JPanel(new BorderLayout());
+        searchPanel.add(new JLabel("Enter a business name: "), BorderLayout.WEST);
+        searchPanel.add(userInputField, BorderLayout.CENTER);
+        searchPanel.add(searchButton, BorderLayout.EAST);
+        inputPanel.add(searchPanel, BorderLayout.CENTER);
+        inputPanel.add(cateButton, BorderLayout.EAST);
+
+        // Frame
         add(inputPanel, BorderLayout.NORTH);
         add(new JScrollPane(resultArea), BorderLayout.CENTER);
 
+        // Action Listeners
         searchButton.addActionListener(e -> search());
-        pack();
-        setLocationRelativeTo(null);
-
         cateButton.addActionListener(e -> {
             try {
                 cluster();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            } catch (ClassNotFoundException ex) {
-                throw new RuntimeException(ex);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-        pack();
-        setLocationRelativeTo(null);
-
+        // Frame properties
+        setSize(600, 400); // Set initial size
+        setLocationRelativeTo(null); // Center the frame on the screen
 
     }
 
     private void cluster() throws IOException, ClassNotFoundException {
-        resultArea.append("Hello! This is button for cluster");
-        FileInputStream fileInputStream = new FileInputStream("src/files/0-Tim4ucmy8bNugnzKXG8g.ser");
-        ObjectInputStream objectInputStream= new ObjectInputStream(fileInputStream);
-        Business b = (Business) objectInputStream.readObject();
-        objectInputStream.close();
-        fileInputStream.close();
-        System.out.println("Business: " + b.getName());
-        System.out.println("Business ID : " + b.getBusiness_id());
-        System.out.println("Business Category: " + Arrays.toString(b.getCategoriesArr()));
 
+//        resultArea.append("Hello! This is button for cluster");
+//        FileInputStream fileInputStream = new FileInputStream("src/files/0-Tim4ucmy8bNugnzKXG8g.ser");
+//        ObjectInputStream objectInputStream= new ObjectInputStream(fileInputStream);
+//        Business b = (Business) objectInputStream.readObject();
+//        objectInputStream.close();
+//        fileInputStream.close();
+//        System.out.println("Business: " + b.getName());
+//        System.out.println("Business ID : " + b.getBusiness_id());
+//        System.out.println("Business Category: " + Arrays.toString(b.getCategoriesArr()));
+
+        resultArea.setText("");
+
+        Clustering c1 = new Clustering();
+        CustomMap<String, ArrayList<WeightedData>> output = c1.run();
+
+        ArrayList<String> keys = output.getAllKeys();
+        CustomMap<String, Business>  businessMap = c1.getBusinessHashMap();
+
+        resultArea.append("Total cost: " + c1.calculateTotalCost(output) + "\n");
+        for (String key: keys) {
+            resultArea.append("-------"  + "\n");
+            resultArea.append("Medoid business name: " + businessMap.get(key).getName()  + "\n");
+            ArrayList<WeightedData> weightedDataArrayList = output.get(key);
+            weightedDataArrayList.sort(Comparator.comparingDouble(WeightedData::getValue).reversed());
+            for (int i = 0; i < 3; i++) {
+                resultArea.append(businessMap.get(weightedDataArrayList.get(i).getKey()).getName() + " : " + weightedDataArrayList.get(i).getValue() + "\n");
+            }
+        }
+
+//        resultArea.append();
     }
 
     private void search() {
