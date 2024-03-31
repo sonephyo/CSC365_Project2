@@ -1,10 +1,11 @@
 package hashMap;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
 
 //implementation of a hash map using separate chaining for handling collision
-public class CustomMap<K,V> {
+public class CustomMap<K,V> implements Serializable {
 
     //array of linked lists(buckets( where each buckets stores nodes(key-value)
     private ArrayList<CustomHashNode<K,V>> bucketArray;

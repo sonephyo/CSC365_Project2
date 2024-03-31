@@ -1,6 +1,8 @@
 package weightedData;
 
-public class WeightedData { //getting key and its weighted data
+import java.io.Serializable;
+
+public class WeightedData implements Serializable { //getting key and its weighted data
     private String key; //key(Names)
     private double value; //weighted data value
 

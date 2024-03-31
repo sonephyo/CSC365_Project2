@@ -12,18 +12,18 @@ import java.util.*;
 
 public class Clustering {
 
-    private  BTree b;
+    private static BTree b;
 
-    private Set<Set<String>> tracking = new HashSet<>();
+    private static Set<Set<String>> tracking = new HashSet<>();
 
     //customMap is used to store business data where the key is a string and values is a Business
-    private CustomMap<String, Business> businessHashMap = new CustomMap<>();
+    private static CustomMap<String, Business> businessHashMap = new CustomMap<>();
 
     //Map business IDs to review texts
-    private CustomMap<String, String> businessReviewMap = new CustomMap<>();
+    private static CustomMap<String, String> businessReviewMap = new CustomMap<>();
 
     //track index for random medoid
-    private Set<Integer> trackingSerFilesRandomIndex = new HashSet<>();
+    private static Set<Integer> trackingSerFilesRandomIndex = new HashSet<>();
 
 
     public CustomMap<String, Business> getBusinessHashMap() {
@@ -31,8 +31,9 @@ public class Clustering {
     }
 
 
-    public CustomMap<String, ArrayList<WeightedData>> run() throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         //reads data from a serialized file
+
         FileInputStream fileInputStream = new FileInputStream("src/btreeOutput/output.ser");
         ObjectInputStream objectInputStream= new ObjectInputStream(fileInputStream);
         b = (BTree) objectInputStream.readObject();
@@ -90,14 +91,14 @@ public class Clustering {
             }
             iteration_count++;
 
-        }
 
-        return chosen;
+        }
+        serializtationCluster(chosen);
 
     }
 
     //getting random medorid from the ser files
-    public String getRandomSerFile(ArrayList<String> allSerFiles) {
+    public static String getRandomSerFile(ArrayList<String> allSerFiles) {
         Random r = new Random();
         int randomSerIndex = r.nextInt(allSerFiles.size());
         //checks if the index already in the set, if so find another one
@@ -111,7 +112,7 @@ public class Clustering {
 
 
     //change the value to do swapping for medoid
-    public Set<String> changeOneValueFromSet(Set<String> originalSet, ArrayList<String> values) {
+    public static Set<String> changeOneValueFromSet(Set<String> originalSet, ArrayList<String> values) {
         Random r = new Random();
         //variables for original index and values from the array list
         int randomIndex = r.nextInt(originalSet.size());
@@ -131,7 +132,7 @@ public class Clustering {
     }
 
     //selecting closet cluster based on the cost
-    private CustomMap<String, ArrayList<WeightedData>> compareCluster(
+    private static CustomMap<String, ArrayList<WeightedData>> compareCluster(
             CustomMap<String, ArrayList<WeightedData>> dataAllocatedToClusters1,
             CustomMap<String, ArrayList<WeightedData>> dataAllocatedToClusters2) {
 
@@ -148,7 +149,7 @@ public class Clustering {
     }
 
     //calcuating total cost using weighted data, take custompmap which has keys and a list of weighted data values
-    public double calculateTotalCost(CustomMap<String, ArrayList<WeightedData>> dataAllocatedToClusters) {
+    public static double calculateTotalCost(CustomMap<String, ArrayList<WeightedData>> dataAllocatedToClusters) {
 
         //retrieves the values(list of weightedData) from dataAllocatedToClusters
         //store them in the array list
@@ -171,7 +172,7 @@ public class Clustering {
 
     //Map with string and a list of weightedData values
     //allocated non-medoid to clusters
-    public CustomMap<String, ArrayList<WeightedData>> allocatingToSelectedCluster(String[] medoidNames) throws IOException, ClassNotFoundException {
+    public static CustomMap<String, ArrayList<WeightedData>> allocatingToSelectedCluster(String[] medoidNames) throws IOException, ClassNotFoundException {
         //to keep track of medoid names to prevent them being used again
         tracking.add(new HashSet<>(List.of(medoidNames)));
 
@@ -226,7 +227,7 @@ public class Clustering {
 
     //Method that takes medoid filename
     //return a map where keys are filenames and values(weightedData) are double
-    public CustomMap<String, Double> weightedData(String medoidFilename) throws IOException, ClassNotFoundException {
+    public static CustomMap<String, Double> weightedData(String medoidFilename) throws IOException, ClassNotFoundException {
 
         //CustomMap objects for count of each word in the review text for each filename
         //check if the words contain in the review text
@@ -297,7 +298,7 @@ public class Clustering {
 
         CustomMap<String, Double> weightValues = new CustomMap<>();
         CustomMap<String, String> weightValuesNames = new CustomMap<>();
-        //for each file name in b trre
+        //for each file name in b tree
         for (String filename: b.getValues()) {
 
             //calculate the weighted value using calculateWeight method using countOfEachWordMap, dfCount, the total number of review
@@ -324,7 +325,7 @@ public class Clustering {
 
 
     //method to deserialize the ser files
-    public Business findFile(String filename) throws IOException, ClassNotFoundException {
+    public static Business findFile(String filename) throws IOException, ClassNotFoundException {
         //file path
         FileInputStream fileIn = new FileInputStream("src/files/" + filename);
         ObjectInputStream in =  new ObjectInputStream(fileIn);
@@ -336,9 +337,19 @@ public class Clustering {
 
     }
 
+    public static void serializtationCluster(CustomMap<String, ArrayList<WeightedData>> chosen) throws IOException, ClassNotFoundException {
+        //file path
+        FileOutputStream fileOut = new FileOutputStream("src/clusterOutput/clusters.ser");
+        ObjectOutputStream out =  new ObjectOutputStream(fileOut);
+        out.writeObject(chosen);
+        fileOut.close();
+        out.close();
+
+    }
+
     // Cleaning the user input string and outputting a String array
     //reusing cleanString from project 1
-    private String[] cleanString(String rawString) throws IOException {
+    private static String[] cleanString(String rawString) throws IOException {
         rawString = rawString.replaceAll("[^a-zA-Z']", " ");
         rawString = rawString.toLowerCase();
 
@@ -353,7 +364,7 @@ public class Clustering {
 
 
     //reusing calculateWeight from project 1
-    private double calculateWeight(int[] tfData,int[] dfData, int totalReview) {
+    private static double calculateWeight(int[] tfData, int[] dfData, int totalReview) {
         double total = 0;
         for (int i = 0; i < tfData.length; i++) {
             total += Math.log10(1+tfData[i])*((double) totalReview /(dfData[i]+1));

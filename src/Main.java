@@ -36,16 +36,16 @@ public class Main extends JFrame {
 
 
         DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
-        comboBoxModel.addElement("Moon's Kitchen Cafe");
-        comboBoxModel.addElement("Thai Legacy Restaurant");
-        comboBoxModel.addElement("Blues City Deli");
-        comboBoxModel.addElement("New India's Kitchen");
-        comboBoxModel.addElement("Enterprise Rent-A-Car");
-        comboBoxModel.addElement("EATS! American Grill");
+        comboBoxModel.addElement("Sukho Thai");
+        comboBoxModel.addElement("Direct Energy Solar");
+        comboBoxModel.addElement("The Silverspoon");
+        comboBoxModel.addElement("Denny's");
+        comboBoxModel.addElement("Lily");
+        comboBoxModel.addElement("Suite Six");
         comboBoxModel.addElement("Helena Avenue Bakery");
-        comboBoxModel.addElement("Yolklore");
-        comboBoxModel.addElement("Zimmer's Seafood");
-        comboBoxModel.addElement("Target");
+        comboBoxModel.addElement("All About Hair");
+        comboBoxModel.addElement("Plush");
+        comboBoxModel.addElement("Sake House");
 
         userInputField = new JComboBox<>(comboBoxModel);
         userInputField.setEditable(true);
@@ -88,25 +88,37 @@ public class Main extends JFrame {
 
         resultArea.setText("");
 
-        Clustering c1 = new Clustering();
-        CustomMap<String, ArrayList<WeightedData>> output = c1.run();
+        //Clustering c1 = new Clustering();
+        //CustomMap<String, ArrayList<WeightedData>> output = c1.run();
 
-        ArrayList<String> keys = output.getAllKeys();
-        CustomMap<String, Business>  businessMap = c1.getBusinessHashMap();
-
-        resultArea.append("Total cost: " + c1.calculateTotalCost(output) + "\n");
-        for (String key: keys) {
-            resultArea.append("-------"  + "\n");
-            resultArea.append("Medoid business name: " + businessMap.get(key).getName()  + "\n");
-            resultArea.append("The keys in the cluster for above medoid: " + "\n");
-            ArrayList<WeightedData> weightedDataArrayList = output.get(key);
-            weightedDataArrayList.sort(Comparator.comparingDouble(WeightedData::getValue).reversed());
-            for (int i = 0; i < 3; i++) {
-                resultArea.append(businessMap.get(weightedDataArrayList.get(i).getKey()).getName() + " : " + weightedDataArrayList.get(i).getValue() + "\n");
-            }
-        }
-
+//        ArrayList<String> keys = output.getAllKeys();
+//        CustomMap<String, Business>  businessMap = c1.getBusinessHashMap();
+//
+//        resultArea.append("Total cost: " + c1.calculateTotalCost(output) + "\n");
+//        for (String key: keys) {
+//            resultArea.append("-------"  + "\n");
+//            resultArea.append("Medoid business name: " + businessMap.get(key).getName()  + "\n");
+//            resultArea.append("The keys in the cluster for above medoid: " + "\n");
+//            ArrayList<WeightedData> weightedDataArrayList = output.get(key);
+//            weightedDataArrayList.sort(Comparator.comparingDouble(WeightedData::getValue).reversed());
+//            for (int i = 0; i < 3; i++) {
+//                resultArea.append(businessMap.get(weightedDataArrayList.get(i).getKey()).getName() + " : " + weightedDataArrayList.get(i).getValue() + "\n");
+//            }
+//        }
 //        resultArea.append();
+        FileInputStream fileIn = new FileInputStream("src/clusterOutput/clusters.ser");
+        ObjectInputStream in = new ObjectInputStream(fileIn);
+        Object obj = in.readObject();
+        fileIn.close();
+        in.close();
+
+        CustomMap <String, ArrayList<WeightedData>> clusterList = (CustomMap<String, ArrayList<WeightedData>>) obj;
+//        System.out.println(clusterList.getAllValues());
+        ArrayList values = clusterList.getAllValues();
+        String userInput = userInputField.getSelectedItem().toString();
+
+
+
     }
 
     private void search() {
