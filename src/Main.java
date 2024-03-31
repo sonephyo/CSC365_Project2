@@ -1,3 +1,4 @@
+import bTree.BTree;
 import classes.Business;
 import classes.Review;
 import com.google.gson.Gson;
@@ -13,10 +14,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Hashtable;
+import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 
@@ -112,10 +110,32 @@ public class Main extends JFrame {
         fileIn.close();
         in.close();
 
-        CustomMap <String, ArrayList<WeightedData>> clusterList = (CustomMap<String, ArrayList<WeightedData>>) obj;
+        FileInputStream fileInputStream = new FileInputStream("src/btreeOutput/output.ser");
+        ObjectInputStream objectInputStream= new ObjectInputStream(fileInputStream);
+        BTree b = (BTree) objectInputStream.readObject();
+        objectInputStream.close();
+        fileInputStream.close();
+
+        CustomMap<String, Business> businessHashMap = new CustomMap<>();
+
+
+        //Populate the businessHashmap with business objects from BTree
+        //businessReviewMap with review text
+        for (String i: b.getValues()) {
+            Business b1 = findFile(i);
+            businessHashMap.add(i, b1);
+        }
+
+//        CustomMap <String, ArrayList<WeightedData>> clusterList = (CustomMap<String, ArrayList<WeightedData>>) obj;
 //        System.out.println(clusterList.getAllValues());
-        ArrayList values = clusterList.getAllValues();
-        String userInput = userInputField.getSelectedItem().toString();
+//        ArrayList values = clusterList.getAllValues();
+        String userInput = Objects.requireNonNull(userInputField.getSelectedItem()).toString();
+
+        for (String i: businessHashMap.getAllKeys()) {
+            if (businessHashMap.get(i).getName().equalsIgnoreCase(userInput)) {
+                System.out.println(i);
+            }
+        }
 
 
 
@@ -257,6 +277,18 @@ public class Main extends JFrame {
             }
         }
         return null;
+    }
+
+    private static Business findFile(String filename) throws IOException, ClassNotFoundException {
+        //file path
+        FileInputStream fileIn = new FileInputStream("src/files/" + filename);
+        ObjectInputStream in =  new ObjectInputStream(fileIn);
+        Object findOutput = in.readObject();
+        fileIn.close();
+        in.close();
+
+        return (Business) findOutput;
+
     }
 
     // To run the GUI
