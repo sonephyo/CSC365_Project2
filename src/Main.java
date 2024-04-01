@@ -126,16 +126,33 @@ public class Main extends JFrame {
             businessHashMap.add(i, b1);
         }
 
-//        CustomMap <String, ArrayList<WeightedData>> clusterList = (CustomMap<String, ArrayList<WeightedData>>) obj;
-//        System.out.println(clusterList.getAllValues());
+        CustomMap <String, ArrayList<WeightedData>> clusterList = (CustomMap<String, ArrayList<WeightedData>>) obj;
+        System.out.println(clusterList.getAllValues());
 //        ArrayList values = clusterList.getAllValues();
         String userInput = Objects.requireNonNull(userInputField.getSelectedItem()).toString();
 
+        String userInputSername = "";
         for (String i: businessHashMap.getAllKeys()) {
             if (businessHashMap.get(i).getName().equalsIgnoreCase(userInput)) {
-                System.out.println(i);
+                userInputSername = i;
+                System.out.println(userInputSername);
             }
         }
+
+        String clusterContainingUserInput = ""; //store the cluster containing userInput
+        ArrayList<String> keys = clusterList.getAllKeys(); //retrieve all keys
+        for (String key: keys){
+            ArrayList<WeightedData> cluster = clusterList.get(key); //retrieve the associated cluster
+            for (WeightedData i : cluster){ //each element in cluster
+                if(i.getKey().equals(userInputSername)){ //if matches the userinput
+                    clusterContainingUserInput = key; //then the cluster containing the userinput
+                }
+
+            }
+        }
+        System.out.println("Usernput: " + userInput + "\n");
+        System.out.println(clusterContainingUserInput);
+        System.out.println("The medoid name associated with the cluster userinput belong to: " + businessHashMap.get(clusterContainingUserInput).getName());
 
 
 

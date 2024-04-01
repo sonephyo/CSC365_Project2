@@ -86,7 +86,7 @@ public class Clustering {
             System.out.println("Current chosen: " + calculateTotalCost(chosen));
             //System.out.println(calculateTotalCost(chosen));
 
-            if (iteration_count >=2) {
+            if (iteration_count >=10) {
                 break;
             }
             iteration_count++;
